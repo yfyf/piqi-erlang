@@ -4,15 +4,15 @@ set -e
 #set -x
 
 
-if [ -n "$REBAR_DEPS_DIR" ]
+if [ -d "$REBAR_DEPS_DIR" ]
 then
         true
-elif [ -d deps ]
-then
-        REBAR_DEPS_DIR=deps
 elif [ -d ../../deps ]
 then
         REBAR_DEPS_DIR=../../deps
+elif [ -d deps ]
+then
+        REBAR_DEPS_DIR=deps
 else
         echo "can't find rebar 'deps' directory around `pwd`" 1>&2
         exit 1
