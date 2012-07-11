@@ -65,8 +65,11 @@ fi
 # Make the links to the PIQI_SRC before we start compiling.
 # This is important for Deployar situation, since the directory
 # structure inside and outside the Mock environment is different!
+RESOLVED_SRC_DIR="`readlink -f $REBAR_DEPS_DIR/piqi_src/piqi-erlang/src`"
+RESOLVED_INC_DIR="`readlink -f $REBAR_DEPS_DIR/piqi_src/piqi-erlang/include`"
+
 rm -f src
-ln -sf $REBAR_DEPS_DIR/piqi_src/piqi-erlang/src
+ln -sf $RESOLVED_SRC_DIR
 
 rm -f include
-ln -sf $REBAR_DEPS_DIR/piqi_src/piqi-erlang/include
+ln -sf $RESOLVED_INC_DIR
