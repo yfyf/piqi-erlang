@@ -40,40 +40,10 @@ stop() ->
 
 % find the location of "piqi" executable
 find_piqi() ->
-    case os:getenv("PIQI") of
+    Vsn = os:cmd("piqi version"),
+    case lists:prefix("0.6.", Vsn) of
+        true ->
+            "piqi";
         false ->
-            find_piqi_1();
-        PiqiName ->
-            PiqiName
+            erlang:error("Piqi " ++ Vsn ++ " incompatible. Need 0.6.x")
     end.
-
-
-find_piqi_1() ->
-    case code:lib_dir(piqi) of
-        {error, _Error} ->
-            find_piqi_in_path();
-        PiqiDir ->
-            KernelName = os:cmd("uname -s") -- "\n",
-            Machine = os:cmd("uname -m") -- "\n",
-            Arch = lists:concat([KernelName, "-", Machine]),
-            % path to "piqi" executable within "piqi" application directory
-            FullName = filename:join([PiqiDir, "priv", "piqi-binary", Arch, "piqi"]),
-            case filelib:is_regular(FullName) of
-                true ->
-                    FullName;
-                false ->
-                    error_logger:warning_msg("can't find 'piqi' executable at ~s~n", [FullName]),
-                    find_piqi_in_path()
-            end
-    end.
-
-
-% try looking for "piqi" executable in $PATH
-find_piqi_in_path() ->
-    case os:find_executable("piqi") of
-        false ->
-            erlang:error("failed to find 'piqi' executable");
-        Filename ->
-            Filename
-    end.
-
