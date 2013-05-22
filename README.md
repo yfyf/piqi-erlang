@@ -79,22 +79,15 @@ Mailing list
 http://groups.google.com/group/piqi
 
 
-Advanced installation
----------------------
+Installation
+------------
 
-Sometimes, it may be useful or even necessary to use a custom version of the
-`piqi` binary executable instead of the pre-built one that comes with
-`piqi-erlang`.
+You need to put `piqi` binary to `$PATH`. You can do it one of these ways:
 
-For example, there may not be a pre-built `piqi` for your platform. Or
-organization policies may prohibit installing third-party binaries.
-
-In this case, you can build the `piqi` binary from [source
-code](https://github.com/alavrik/piqi), put it somewhere in the local filesystem
-and point to it using the `PIQI` environment variable _before_ running any
-`rebar` commands and starting the `piqi` Erlang application. For example:
-
-    export PIQI=/usr/local/bin/piqi
+1. Compile and put to `$PATH`
+2. Install system-wide package from
+   [Ubuntu PPA](https://launchpad.net/~motiejus/+archive/piqi) or
+   [Open Build Service](https://build.opensuse.org/package/show?package=piqi&project=home%3Amotiejusj)
 
 
 Contributing

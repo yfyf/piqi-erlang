@@ -1,6 +1,6 @@
 
 ifndef PIQI
-PIQI = ../../priv/bin/piqi
+PIQI = piqi
 endif
 
 #PIQIC = $(REBAR_DEPS_DIR)/piqi/priv/bin/piqic-erlang
