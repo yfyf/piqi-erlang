@@ -20,7 +20,6 @@
 -behaviour(supervisor).
 
 -export([start_link/1]).
--export([get_worker/0, remove_worker/1]).
 
 % OTP supervisor callbacks
 -export([init/1]).
@@ -31,26 +30,17 @@
 start_link(WorkerPoolSize) ->
     supervisor:start_link({local, ?SUPERVISOR}, ?MODULE, [WorkerPoolSize]).
 
-get_worker() ->
-    case pg2:get_members(piqi_workers) of
-        [] ->
-            {error, no_workers};
-        [SingleWorker] ->
-            {ok, SingleWorker};
-        MultipleWorkers ->
-            {_,_,Usec} = os:timestamp(),
-            Index = (Usec rem length(MultipleWorkers)) + 1,
-            {ok, lists:nth(Index, MultipleWorkers)}
-    end.
-
-remove_worker(Pid) ->
-    pg2:leave(piqi_workers, Pid).
-
 init([WorkerPoolSize]) ->
-    pg2:create(piqi_workers),
     PiqiServers = [ piqi_server_spec(I) || I <- lists:seq(1, WorkerPoolSize) ],
-    {ok, {{one_for_one, 10, 1}, PiqiServers}}.
+    {ok, {{one_for_one, 10, 1}, [piqi_workerpool_spec() | PiqiServers]}}.
 
+piqi_workerpool_spec() ->
+    {
+        piqi_worker_pool,
+        {piqi_worker_pool, start_link, []},
+        permanent, 1000, worker,
+        [piqi_worker_pool]
+    }.
 piqi_server_spec(N) ->
     {{piqi_tools, N},
         {piqi_tools, start_link, []},

@@ -105,10 +105,9 @@ init([]) ->
     Piqi = piqi:find_piqi(),
     Command = Piqi ++ " server" ++ ?PIQI_FLAGS,
     %Command = "tee ilog | piqi server --trace | tee olog",
-
     Port = start_port_receiver(Command),
     State = #sender_state{ port = Port },
-    pg2:join(piqi_workers, self()),
+    piqi_worker_pool:add_worker(self()),
     {ok, State}.
 
 
@@ -131,7 +130,7 @@ handle_info(Info, State) ->
 
 %% @private
 terminate(_Reason, _State = #sender_state{port = Port}) ->
-    pg2:leave(self()),
+    piqi_worker_pool:remove_worker(self()),
     % don't bother checking if the port is still valid, e.g. after EXIT
     catch erlang:port_close(Port),
     ok.
@@ -346,15 +345,15 @@ call_server(Args) ->
     % without failing the calls. This might be useful for "piqi server" upgrades
     % and in case of potential "piqi server" crashes.
     % If we have no workers at this point, no use to immediately retry, so just crash.
-    {ok, Pid} = piqi_sup:get_worker(),
+    {ok, Pid} = piqi_worker_pool:get_worker(),
     try
         gen_server:call(Pid, Args, ?CALL_TIMEOUT)
     catch
         % Piqi tools has exited, but hasn't been restarted by Piqi supervisor
         % yet
         exit:{noproc, _} ->
-            piqi_sup:remove_worker(Pid),
-            {ok, Pid1} = piqi_sup:get_worker(),
+            piqi_worker_pool:remove_worker(Pid),
+            {ok, Pid1} = piqi_worker_pool:get_worker(),
             gen_server:call(Pid1, Args, ?CALL_TIMEOUT)
     end.
 

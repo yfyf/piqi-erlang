@@ -17,7 +17,6 @@
 %%
 -module(piqirun_tests).
 
--ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 
 
@@ -101,4 +100,3 @@ fixed64_test_() ->
     [ gen_test_type(X, non_neg_integer_to_fixed64, non_neg_integer_of_fixed64)
       || X <- uint64_input() ].
 
--endif.
