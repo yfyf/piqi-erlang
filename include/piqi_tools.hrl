@@ -31,7 +31,7 @@
 %
 %      Pretty-print generated JSON and XML output (default = true)
 %
-% json_omit_null_fields
+% json_omit_missing_fields
 %
 %      Omit missing optional and empty repeated fields from JSON
 %      output instead of representing them as {"field_name": null} and
@@ -42,15 +42,39 @@
 %      Treat unknown and duplicate fields as errors when parsing JSON,
 %      XML and Piq formats (default = false)
 %
+% piq_frameless_output
+%
+%      Print a frame (i.e. :<typename> []) around a single output Piq object
+%      (default=false)
+%
+% piq_frameless_input
+%
+%      Expect a frame around a single input Piq object (default=false)
+%
+% piq_relaxed_parsing
+%
+%      Parse Piq format using "relaxed" mode (default=false);
+%
+%      For instance, when set to `true`, single-word string literals don't have
+%      to be quoted
+%
 -type piqi_convert_option() ::
        'pretty_print'
     | {'pretty_print', boolean()}
-    |  'json_omit_null_fields'
+    |  'json_omit_missing_fields'
+    | {'json_omit_missing_fields', boolean()}
+    |  'json_omit_null_fields'  % deprecated: use json_omit_missing_fields instead
     | {'json_omit_null_fields', boolean()}
     |  'use_strict_parsing'
-    | {'use_strict_parsing', boolean()}.
+    | {'use_strict_parsing', boolean()}
+    |  'piq_frameless_output'
+    | {'piq_frameless_output', boolean()}
+    |  'piq_frameless_input'
+    | {'piq_frameless_input', boolean()}
+    |  'piq_relaxed_parsing'
+    | {'piq_relaxed_parsing', boolean()}.
 
-% default options are presently set to ['pretty_print', 'json_omit_null_fields']
+% default options are presently set to ['pretty_print', 'json_omit_missing_fields']
 -type piqi_convert_options() :: [ piqi_convert_option() ].
 
 

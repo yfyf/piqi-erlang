@@ -53,10 +53,12 @@
     default :: piqi_any(),
     deprecated = false :: boolean(),
     piq_format :: piq_format(),
+    piq_positional :: boolean(),
     protobuf_name :: string() | binary(),
     code :: integer(),
     protobuf_packed = false :: boolean(),
     json_name :: string() | binary(),
+    json_omit_missing :: boolean(),
     getopt_letter :: word(),
     getopt_doc :: string() | binary(),
     erlang_name :: string() | binary()
@@ -131,6 +133,7 @@
     func = [] :: [func()],
     protobuf_custom = [] :: [string() | binary()],
     protobuf_package :: string() | binary(),
+    file :: string() | binary(),
     erlang_module :: string() | binary(),
     erlang_type_prefix :: string() | binary(),
     erlang_string_type = binary :: erlang_string_type() | 'undefined'

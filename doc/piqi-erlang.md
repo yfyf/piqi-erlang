@@ -103,7 +103,7 @@ an additional third argument representing a list of serialization options:
     %
     %      Pretty-print generated JSON and XML output (default = true)
     %
-    % json_omit_null_fields
+    % json_omit_missing_fields
     %
     %      Omit missing optional and empty repeated fields from JSON
     %      output instead of representing them as {"field_name": null} and
@@ -114,13 +114,35 @@ an additional third argument representing a list of serialization options:
     %      Treat unknown and duplicate fields as errors when parsing JSON,
     %      XML and Piq formats (default = false)
     %
+    % piq_frameless_output
+    %
+    %      Print a frame (i.e. :<typename> []) around a single output Piq object
+    %      (default=false)
+    %
+    % piq_frameless_input
+    %
+    %      Expect a frame around a single input Piq object (default=false)
+    %
+    % piq_relaxed_parsing
+    %
+    %      Parse Piq format using "relaxed" mode (default=false);
+    %
+    %      For instance, when set to `true`, single-word string literals don't have
+    %      to be quoted
+    %
     -type piqi_convert_option() ::
            'pretty_print'
         | {'pretty_print', boolean()}
-        |  'json_omit_null_fields'
-        | {'json_omit_null_fields', boolean()}
+        |  'json_omit_missing_fields'
+        | {'json_omit_missing_fields', boolean()}
         |  'use_strict_parsing'
-        | {'use_strict_parsing', boolean()}.
+        | {'use_strict_parsing', boolean()}
+        |  'piq_frameless_output'
+        | {'piq_frameless_output', boolean()}
+        |  'piq_frameless_input'
+        | {'piq_frameless_input', boolean()}
+        |  'piq_relaxed_parsing'
+        | {'piq_relaxed_parsing', boolean()}.
 
 ### Command-line parameters
 
@@ -359,6 +381,27 @@ Erlang types to Piqi types.
     is mapped to:
 
         -type a() :: x().
+
+    For aliases, it is possible to specify an optional `erlang-default` string
+    property. When present, it overrides the Piqi-default value for the type in
+    the generated `*_piqi:default_<typename>/0` functions. It is especially
+    useful with custom Erlang types described in the following section.
+
+    Example:
+
+        .alias [
+            .name positive-int64
+            .type int64
+            .erlang-type "piqirun_custom:pos_int64"
+
+            % we need to specify a custom default value for this type to prevent
+            % Dialyzer and runtime errors caused by the default value of 0
+            %
+            % NOTE: the value is an arbitrary Erlang expression
+
+            .erlang-default "1"
+        ]
+
 
 ### Custom Erlang types
 

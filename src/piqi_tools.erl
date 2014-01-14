@@ -413,8 +413,16 @@ convert(PiqiMod, TypeName, InputFormat, OutputFormat, Data, Options) ->
         output_format = OutputFormat,
         data = Data,
         pretty_print = proplists:get_value('pretty_print', Options),
-        json_omit_null_fields = proplists:get_value('json_omit_null_fields', Options),
-        use_strict_parsing = proplists:get_value('use_strict_parsing', Options)
+        json_omit_missing_fields =
+            % 'json_omit_null_fields' is deprecated in favor of
+            % 'json_omit_missing_fields', but we still support it to preserve
+            % backward compatibility
+            proplists:get_value('json_omit_missing_fields', Options, true) andalso
+            proplists:get_value('json_omit_null_fields', Options, true),
+        use_strict_parsing = proplists:get_value('use_strict_parsing', Options),
+        piq_frameless_output = proplists:get_value('piq_frameless_output', Options),
+        piq_frameless_input = proplists:get_value('piq_frameless_input', Options),
+        piq_relaxed_parsing = proplists:get_value('piq_relaxed_parsing', Options)
     },
     BinInput = piqi_tools_piqi:gen_convert_input(Input),
     case rpc(PiqiMod, <<"convert">>, BinInput) of
