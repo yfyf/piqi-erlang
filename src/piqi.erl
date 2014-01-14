@@ -40,10 +40,4 @@ stop() ->
 
 % find the location of "piqi" executable
 find_piqi() ->
-    Vsn = os:cmd("piqi version"),
-    case lists:prefix("0.6.", Vsn) of
-        true ->
-            "piqi";
-        false ->
-            erlang:error("Piqi " ++ Vsn ++ " incompatible. Need 0.6.x")
-    end.
+    piqic_erlang:find_piqi_executable().
